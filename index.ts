@@ -21,7 +21,7 @@ class Player {
     return newString 
   }
 
-  private setGridTemplateArea(playerElement: HTMLElement | null, styleGridArea: string[], maxLength: number): void {
+  private setGridTemplateArea(playerElement: HTMLElement | null, styleGridArea: string[], maxLength: number, halfLength: number): void {
     if (playerElement && styleGridArea) {
       
       const styleGridAreaString = styleGridArea.reduce((acc: string,column: string) => {
@@ -34,20 +34,28 @@ class Player {
       }, "");
 
       playerElement.style.gridTemplateAreas = styleGridAreaString;
+      playerElement.style.gridTemplateRows = `auto auto 1fr auto auto`;
     }
   }
 
-  private setGridArea(config: string[][]): void {
-    config
-    .reduce((acc, arr) => acc.concat(arr), [])
-    .forEach((item: string) => {
-      const elem = document.getElementById(item);
-      if (!elem ) {
-        item !== "." && console.log(`Элемент с id: ${item} не найден`)
-        return
-      } 
-      elem.setAttribute("style", `grid-area: ${item}`);
-    });
+  private setGridArea(config: string[][], halfLength: number): void {
+    config.forEach((column: string[], index: number)=>{
+      column.forEach((item: string)=>{
+        const elem = document.getElementById(item);
+        if (!elem ) {
+          item !== "." && console.log(`Элемент с id: ${item} не найден`)
+          return
+        } 
+        elem.style.gridArea = item;
+        elem.style.gridRowStart= index>halfLength?`${index}`:`${index+1}`;
+      /*   if (index === 1) {
+          elem.style.alignSelf = 'flex-start'
+        }  
+        if (index === 2){
+          elem.style.alignSelf = 'flex-end'
+        } */
+      })
+    })
   }
 
   public moveElement(): void {
@@ -72,9 +80,10 @@ class Player {
       styleGridArea.push(styleItemGrid);
 
     });
+    const halfLength = Math.round(config.length/2);
 
-    this.setGridTemplateArea(playerElement, styleGridArea, Math.max(...lengthsConfig));
-    this.setGridArea( config );
+    this.setGridTemplateArea(playerElement, styleGridArea, Math.max(...lengthsConfig), halfLength);
+    this.setGridArea( config, halfLength );
   }
 }
 
@@ -92,12 +101,13 @@ newPlayer.addConfig("second", [
 
 
 newPlayer.addConfig("new", [
-  [],
-  ["left", ".", ".", "right"],
-  [ "play", "time", "progresBar", "progresBar"],
+  [ "play", "left", "right", "."],
+  ["time", "progresBar", "progresBar", "progresBar"],
+  [".", ".", ".", "."],
+  ["title", "title", "title", "."],
 ]);
 
 
-newPlayer.switchConfig("first");
+newPlayer.switchConfig("new");
 
 newPlayer.moveElement();

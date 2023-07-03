@@ -1,9 +1,7 @@
 #player {
   display: grid;
-  gap: 20px;
   padding: 20px;
 
-  align-content: space-between;
   align-items: center;
   justify-content: center;
   justify-items: center;
@@ -20,6 +18,14 @@
   height: 100%;
   background-color: antiquewhite;
   z-index: -1;
+}
+#title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#time {
+  font-size: 14px;
 }
 
 #progresBar {

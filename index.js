@@ -15,7 +15,7 @@ var Player = /** @class */ (function () {
             newString += str;
         return newString;
     };
-    Player.prototype.setGridTemplateArea = function (playerElement, styleGridArea, maxLength) {
+    Player.prototype.setGridTemplateArea = function (playerElement, styleGridArea, maxLength, halfLength) {
         var _this = this;
         if (playerElement && styleGridArea) {
             var styleGridAreaString = styleGridArea.reduce(function (acc, column) {
@@ -28,18 +28,26 @@ var Player = /** @class */ (function () {
                 return acc;
             }, "");
             playerElement.style.gridTemplateAreas = styleGridAreaString;
+            playerElement.style.gridTemplateRows = "auto auto 1fr auto auto";
         }
     };
-    Player.prototype.setGridArea = function (config) {
-        config
-            .reduce(function (acc, arr) { return acc.concat(arr); }, [])
-            .forEach(function (item) {
-            var elem = document.getElementById(item);
-            if (!elem) {
-                item !== "." && console.log("\u042D\u043B\u0435\u043C\u0435\u043D\u0442 \u0441 id: ".concat(item, " \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D"));
-                return;
-            }
-            elem.setAttribute("style", "grid-area: ".concat(item));
+    Player.prototype.setGridArea = function (config, halfLength) {
+        config.forEach(function (column, index) {
+            column.forEach(function (item) {
+                var elem = document.getElementById(item);
+                if (!elem) {
+                    item !== "." && console.log("\u042D\u043B\u0435\u043C\u0435\u043D\u0442 \u0441 id: ".concat(item, " \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D"));
+                    return;
+                }
+                elem.style.gridArea = item;
+                elem.style.gridRowStart = index > halfLength ? "".concat(index) : "".concat(index + 1);
+                /*   if (index === 1) {
+                    elem.style.alignSelf = 'flex-start'
+                  }
+                  if (index === 2){
+                    elem.style.alignSelf = 'flex-end'
+                  } */
+            });
         });
     };
     Player.prototype.moveElement = function () {
@@ -56,8 +64,9 @@ var Player = /** @class */ (function () {
             lengthsConfig.push(item.length);
             styleGridArea.push(styleItemGrid);
         });
-        this.setGridTemplateArea(playerElement, styleGridArea, Math.max.apply(Math, lengthsConfig));
-        this.setGridArea(config);
+        var halfLength = Math.round(config.length / 2);
+        this.setGridTemplateArea(playerElement, styleGridArea, Math.max.apply(Math, lengthsConfig), halfLength);
+        this.setGridArea(config, halfLength);
     };
     return Player;
 }());
@@ -71,9 +80,10 @@ newPlayer.addConfig("second", [
     ["time", "progresBar", "progresBar"],
 ]);
 newPlayer.addConfig("new", [
-    [],
-    ["left", ".", ".", "right"],
-    ["play", "time", "progresBar", "progresBar"],
+    ["play", "left", "right", "."],
+    ["time", "progresBar", "progresBar", "progresBar"],
+    [".", ".", ".", "."],
+    ["title", "title", "title", "."],
 ]);
 newPlayer.switchConfig("new");
 newPlayer.moveElement();
