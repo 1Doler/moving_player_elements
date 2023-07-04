@@ -34,7 +34,7 @@ class Player {
       }, "");
 
       playerElement.style.gridTemplateAreas = styleGridAreaString;
-      playerElement.style.gridTemplateRows = `auto auto 1fr auto auto`;
+      playerElement.style.gridTemplateRows = `repeat(${halfLength}, auto) 1fr repeat(${maxLength-(maxLength-halfLength)-1}, auto)`;
     }
   }
 
@@ -47,13 +47,7 @@ class Player {
           return
         } 
         elem.style.gridArea = item;
-        elem.style.gridRowStart= index>halfLength?`${index}`:`${index+1}`;
-      /*   if (index === 1) {
-          elem.style.alignSelf = 'flex-start'
-        }  
-        if (index === 2){
-          elem.style.alignSelf = 'flex-end'
-        } */
+        elem.style.gridRow = index < halfLength ? `${index+1}` : `${index+2}`;
       })
     })
   }
@@ -95,19 +89,26 @@ newPlayer.addConfig("first", [
 ]);
 
 newPlayer.addConfig("second", [
-  ["play", "left", "right"],
-  ["time", "progresBar", "progresBar"],
+  ['play', 'title', 'title', "."],
+  ['.', '.', '.', "."],
+  [".", ".", "left", "right"],
+  ["time", "progresBar", "progresBar", 'progresBar'],
 ]);
 
 
 newPlayer.addConfig("new", [
-  [ "play", "left", "right", "."],
+  [ ".", "left", "right", "play"],
+  [".", ".",".",".",],
   ["time", "progresBar", "progresBar", "progresBar"],
-  [".", ".", ".", "."],
   ["title", "title", "title", "."],
 ]);
 
+newPlayer.addConfig("new1", [
+  ["time", "progresBar", "progresBar", "progresBar"],
+  ["title",  "play", "left", "right"],
+]);
 
-newPlayer.switchConfig("new");
+
+newPlayer.switchConfig("second");
 
 newPlayer.moveElement();

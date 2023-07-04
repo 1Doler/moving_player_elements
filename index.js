@@ -28,7 +28,7 @@ var Player = /** @class */ (function () {
                 return acc;
             }, "");
             playerElement.style.gridTemplateAreas = styleGridAreaString;
-            playerElement.style.gridTemplateRows = "auto auto 1fr auto auto";
+            playerElement.style.gridTemplateRows = "repeat(".concat(halfLength, ", auto) 1fr repeat(").concat(maxLength - (maxLength - halfLength) - 1, ", auto)");
         }
     };
     Player.prototype.setGridArea = function (config, halfLength) {
@@ -40,13 +40,7 @@ var Player = /** @class */ (function () {
                     return;
                 }
                 elem.style.gridArea = item;
-                elem.style.gridRowStart = index > halfLength ? "".concat(index) : "".concat(index + 1);
-                /*   if (index === 1) {
-                    elem.style.alignSelf = 'flex-start'
-                  }
-                  if (index === 2){
-                    elem.style.alignSelf = 'flex-end'
-                  } */
+                elem.style.gridRow = index < halfLength ? "".concat(index + 1) : "".concat(index + 2);
             });
         });
     };
@@ -76,14 +70,20 @@ newPlayer.addConfig("first", [
     ["play", "left", "right"],
 ]);
 newPlayer.addConfig("second", [
-    ["play", "left", "right"],
-    ["time", "progresBar", "progresBar"],
+    ['play', 'title', 'title', "."],
+    ['.', '.', '.', "."],
+    [".", ".", "left", "right"],
+    ["time", "progresBar", "progresBar", 'progresBar'],
 ]);
 newPlayer.addConfig("new", [
-    ["play", "left", "right", "."],
+    [".", "left", "right", "play"],
+    [".", ".", ".", ".",],
     ["time", "progresBar", "progresBar", "progresBar"],
-    [".", ".", ".", "."],
     ["title", "title", "title", "."],
 ]);
-newPlayer.switchConfig("new");
+newPlayer.addConfig("new1", [
+    ["time", "progresBar", "progresBar", "progresBar"],
+    ["title", "play", "left", "right"],
+]);
+newPlayer.switchConfig("second");
 newPlayer.moveElement();
